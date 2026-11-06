@@ -16,7 +16,7 @@ dependencies = [
     "SimpleITK",
     "tifffile",
     # Torch-free remote client for nninteractive-server.
-    "nninteractive-client>=2.6.0",
+    "nninteractive-client>=2.5.0",
     # The tool server (MCP) agents talk to.
     "mcp>=2.3",
 ]
@@ -28,7 +28,7 @@ Paper = "https://arxiv.org/abs/2610.31080"
 
 [project.optional-dependencies]
 # Inference on this machine instead of an nninteractive-server (pulls PyTorch + nnU-Net).
-local = ["nnInteractive>=2.5.4"]
+local = ["nnInteractive>=2.5.0"]
 # Browser demo (nninteractive-agent-web).
 web = ["claude-agent-sdk>=0.2.165", "fastapi", "uvicorn[standard]", "python-multipart", "cryptography"]
 # Building the benchmark from its sources (benchmark/prepare.py): DICOM.
