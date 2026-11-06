@@ -28,7 +28,7 @@ Paper = "https://arxiv.org/abs/2610.31080"
 
 [project.optional-dependencies]
 # Inference on this machine instead of an nninteractive-server (pulls PyTorch + nnU-Net).
-local = ["nnInteractive>=2.6.0"]
+local = ["nnInteractive>=2.5.4"]
 # Browser demo (nninteractive-agent-web).
 web = ["claude-agent-sdk>=0.2.165", "fastapi", "uvicorn[standard]", "python-multipart", "cryptography"]
 # Building the benchmark from its sources (benchmark/prepare.py): DICOM.
