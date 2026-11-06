@@ -26,7 +26,7 @@ import sys
 from pathlib import Path
 
 from .core.pyguard import PYTHON_MODES, describe
-from .core.session import LOCAL_HINT, probe, resolve_spec
+from .core.session import LOCAL_HINT, local_device, probe, resolve_spec
 from .skill import PLUGIN_TOOL_PREFIX, SKILL_DIR, SKILL_NAME, VERIFIER_FILE
 
 NAME = "nninteractive"
@@ -47,8 +47,11 @@ def prepare_inference(spec: str) -> None:
             import torch
         except ImportError as e:
             sys.exit(f"{LOCAL_HINT}\n({e})")
-        if torch.cuda.is_available():
+        device = local_device(torch)
+        if str(device) == "cuda:0":
             print(f"nnInteractive: local inference on {torch.cuda.get_device_name(0)}")
+        elif str(device) == "mps":
+            print("nnInteractive: local inference on the Apple GPU (MPS)")
         else:
             print("nnInteractive: local inference on the CPU (no CUDA GPU found): this works, but each prompt is slow")
         print("nnInteractive: getting the weights ...", flush=True)

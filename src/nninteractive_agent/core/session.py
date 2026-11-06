@@ -15,6 +15,17 @@ def resolve_spec(spec: str | None = None) -> str:
     return spec or os.environ.get("NNINTERACTIVE_SERVER_URL") or "local"
 
 
+def local_device(torch):
+    """Select the best available device for local inference."""
+    if torch.cuda.is_available():
+        return torch.device("cuda:0")
+    backends = getattr(torch, "backends", None)
+    mps = getattr(backends, "mps", None)
+    if getattr(mps, "is_available", lambda: False)():
+        return torch.device("mps")
+    return torch.device("cpu")
+
+
 def model_license(session) -> str:
     """The license of the nnInteractive model behind a local or remote session, as nnInteractive
     reports it (the first line of the model folder's LICENSE file)."""
@@ -127,7 +138,7 @@ def _make_local(model_id: str | None):
         raise RuntimeError(f"{LOCAL_HINT} ({e})") from e
 
     folder = ensure_model_available(model_id or get_default_model_id())
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = local_device(torch)
     session = nnInteractiveInferenceSession(
         device=device, use_torch_compile=False, torch_n_threads=os.cpu_count() or 8, verbose=False
     )

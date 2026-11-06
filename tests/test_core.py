@@ -1,8 +1,24 @@
+from types import SimpleNamespace
+
 import numpy as np
 import pytest
 
 from nninteractive_agent.core import metrics, raster, render
 from nninteractive_agent.core.io import LoadedImage, load_image, save_mask
+from nninteractive_agent.core.session import local_device
+
+
+def test_local_device_selection_without_torch():
+    fake_torch = lambda cuda, backends=None: SimpleNamespace(
+        cuda=SimpleNamespace(is_available=lambda: cuda),
+        device=lambda name: name,
+        **({} if backends is None else {"backends": backends}),
+    )
+
+    assert local_device(fake_torch(True)) == "cuda:0"
+    assert local_device(fake_torch(False, SimpleNamespace(mps=SimpleNamespace(is_available=lambda: True)))) == "mps"
+    assert local_device(fake_torch(False, SimpleNamespace(mps=SimpleNamespace(is_available=lambda: False)))) == "cpu"
+    assert local_device(fake_torch(False)) == "cpu"
 
 
 def test_scribble_is_two_px_wide_and_in_plane():
